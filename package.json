@@ -1,0 +1,30 @@
+{
+  "name": "advanced-discord-music-bot",
+  "version": "3.0.0",
+  "description": "Advanced Discord Music Bot with Premium Features by SUBHAN",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.16.0",
+    "@discordjs/rest": "^2.2.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.3",
+    "erela.js": "^2.4.0",
+    "erela.js-spotify": "^1.2.8",
+    "erela.js-facebook": "^1.1.0",
+    "erela.js-apple": "^1.2.3",
+    "erela.js-deezer": "^1.2.0",
+    "erela.js-filters": "^1.2.1",
+    "canvas": "^2.11.2",
+    "genius-lyrics": "^4.4.6",
+    "axios": "^1.6.2",
+    "chalk": "^5.3.0",
+    "moment": "^2.29.4",
+    "pretty-ms": "^8.0.0",
+    "string-progressbar": "^1.0.4"
+  }
+}
