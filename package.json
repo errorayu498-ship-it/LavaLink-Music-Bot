@@ -1,7 +1,7 @@
 {
-  "name": "advanced-discord-music-bot",
-  "version": "3.0.0",
-  "description": "Advanced Discord Music Bot with Premium Features by SUBHAN",
+  "name": "discord-music-bot",
+  "version": "1.0.0",
+  "description": "Advanced Discord Music Bot by SUBHAN",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -9,9 +9,9 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
-    "mongoose": "^8.0.3",
     "erela.js": "^2.4.0",
-    "chalk": "4.1.2",
+    "erela.js-spotify": "^1.2.8",
+    "mongoose": "^8.0.3",
     "moment": "^2.29.4"
   }
 }
