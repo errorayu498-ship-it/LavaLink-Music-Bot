@@ -1,5 +1,17 @@
 const { EmbedBuilder } = require('discord.js');
 
+function formatDuration(ms) {
+    if (!ms || isNaN(ms)) return '00:00';
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 module.exports = {
     name: 'play',
     aliases: ['p'],
@@ -95,11 +107,11 @@ module.exports = {
                 case 'TRACK_LOADED':
                     const track = res.tracks[0];
                     player.queue.add(track);
-                    
+
                     if (!player.playing && !player.paused && !player.queue.length) {
                         player.play();
                     }
-                    
+
                     return message.reply({
                         embeds: [new EmbedBuilder()
                             .setColor(client.config.embedColor)
@@ -118,11 +130,11 @@ module.exports = {
                 case 'PLAYLIST_LOADED':
                     const playlist = res.playlist;
                     player.queue.add(res.tracks);
-                    
+
                     if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) {
                         player.play();
                     }
-                    
+
                     return message.reply({
                         embeds: [new EmbedBuilder()
                             .setColor(client.config.embedColor)
@@ -140,11 +152,11 @@ module.exports = {
                 case 'SEARCH_RESULT':
                     const searchTrack = res.tracks[0];
                     player.queue.add(searchTrack);
-                    
+
                     if (!player.playing && !player.paused && !player.queue.length) {
                         player.play();
                     }
-                    
+
                     return message.reply({
                         embeds: [new EmbedBuilder()
                             .setColor(client.config.embedColor)
@@ -163,7 +175,7 @@ module.exports = {
         } catch (error) {
             if (loadingMsg) await loadingMsg.delete().catch(() => {});
             console.error('Play command error:', error);
-            
+
             return message.reply({
                 embeds: [new EmbedBuilder()
                     .setColor(client.config.embedColor)
@@ -174,15 +186,3 @@ module.exports = {
         }
     }
 };
-
-function formatDuration(ms) {
-    if (!ms || isNaN(ms)) return '00:00';
-    const seconds = Math.floor((ms / 1000) % 60);
-    const minutes = Math.floor((ms / (1000 * 60)) % 60);
-    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
