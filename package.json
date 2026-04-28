@@ -14,7 +14,6 @@
     "dotenv": "^16.3.1",
     "mongoose": "^8.0.3",
     "erela.js": "^2.4.0",
-    "erela.js-spotify": "^1.2.8",
     "canvas": "^2.11.2",
     "genius-lyrics": "^4.4.6",
     "axios": "^1.6.2",
