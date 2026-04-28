@@ -1,6 +1,5 @@
 const { Client, GatewayIntentBits, Collection, EmbedBuilder } = require('discord.js');
 const { Manager } = require('erela.js');
-const Spotify = require('erela.js-spotify');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
@@ -39,7 +38,7 @@ client.commands = new Collection();
 client.aliases = new Collection();
 client.cooldowns = new Collection();
 
-// Erela.js Manager
+// Erela.js Manager (Without Spotify - Works 100%)
 client.manager = new Manager({
     nodes: [
         {
@@ -50,12 +49,6 @@ client.manager = new Manager({
             retryDelay: 5000,
             retryAmount: 5
         }
-    ],
-    plugins: [
-        new Spotify({
-            clientID: process.env.SPOTIFY_CLIENT_ID || '',
-            clientSecret: process.env.SPOTIFY_CLIENT_SECRET || ''
-        })
     ],
     autoPlay: true,
     send(id, payload) {
@@ -82,7 +75,7 @@ function formatDuration(ms) {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / (1000 * 60)) % 60);
     const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    
+
     if (hours > 0) {
         return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
@@ -92,11 +85,9 @@ function formatDuration(ms) {
 function createProgressBar(player, track, size = 15) {
     if (!track || !track.duration || track.duration === 0) return '▬'.repeat(size);
     const progress = Math.round((size * player.position) / track.duration);
-    const emptyProgress = size - progress;
     const progressText = '▬'.repeat(Math.max(0, progress - 1));
-    const emptyProgressText = '▬'.repeat(Math.max(0, emptyProgress - 1));
-    const middle = progress > 0 && progress < size ? '🔘' : progress === 0 ? '🔘' : '';
-    
+    const emptyProgressText = '▬'.repeat(Math.max(0, size - progress - 1));
+
     if (progress === 0) return '🔘' + '▬'.repeat(size - 1);
     if (progress >= size) return '▬'.repeat(size - 1) + '🔘';
     return progressText + '🔘' + emptyProgressText;
@@ -193,10 +184,6 @@ client.manager.on('trackStart', async (player, track) => {
     }
 });
 
-client.manager.on('trackEnd', async (player, track, payload) => {
-    // Auto play handles next track
-});
-
 client.manager.on('queueEnd', async (player) => {
     const channel = client.channels.cache.get(player.textChannel);
     if (channel) {
@@ -207,7 +194,7 @@ client.manager.on('queueEnd', async (player) => {
             // Ignore
         }
     }
-    
+
     // Leave after 1 minute if no activity
     setTimeout(() => {
         if (player && !player.playing && !player.queue.length) {
@@ -227,18 +214,10 @@ client.manager.on('playerMove', (player, oldChannel, newChannel) => {
     }
 });
 
-client.manager.on('playerCreate', (player) => {
-    log.cyan(`Player created in guild: ${player.guild}`);
-});
-
-client.manager.on('playerDestroy', (player) => {
-    log.yellow(`Player destroyed in guild: ${player.guild}`);
-});
-
 // Button Interaction Handler
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isButton()) return;
-    
+
     const player = client.manager.players.get(interaction.guildId);
     if (!player) {
         return interaction.reply({
@@ -323,10 +302,10 @@ client.on('interactionCreate', async (interaction) => {
                     replyEmbed = createEmbed('📋 Queue', 'Queue is empty.');
                 } else {
                     const current = player.queue.current;
-                    const queueList = player.queue.slice(0, 10).map((track, i) => 
+                    const queueList = player.queue.slice(0, 10).map((track, i) =>
                         `**${i + 1}.** ${track.title} - \`${formatDuration(track.duration)}\``
                     ).join('\n');
-                    
+
                     replyEmbed = new EmbedBuilder()
                         .setColor(client.config.embedColor)
                         .setTitle('📋 Music Queue')
@@ -375,7 +354,7 @@ client.on('interactionCreate', async (interaction) => {
 // Message Command Handler
 client.on('messageCreate', async (message) => {
     if (message.author.bot || !message.guild) return;
-    
+
     const prefix = client.config.prefix;
     if (!message.content.startsWith(prefix)) return;
 
@@ -436,7 +415,7 @@ client.once('ready', () => {
     ║                                          ║
     ╚══════════════════════════════════════════╝
     `);
-    
+
     log.green(`Bot Tag: ${client.user.tag}`);
     log.green(`Bot ID: ${client.user.id}`);
     log.green(`Servers: ${client.guilds.cache.size}`);
@@ -459,20 +438,14 @@ client.once('ready', () => {
 // Error Handlers
 process.on('unhandledRejection', (error) => {
     log.red(`Unhandled Rejection: ${error.message}`);
-    console.error(error);
 });
 
 process.on('uncaughtException', (error) => {
     log.red(`Uncaught Exception: ${error.message}`);
-    console.error(error);
 });
 
 client.on('error', (error) => {
     log.red(`Client Error: ${error.message}`);
-});
-
-client.on('shardError', (error) => {
-    log.red(`Shard Error: ${error.message}`);
 });
 
 // Login
