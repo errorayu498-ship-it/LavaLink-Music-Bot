@@ -10,7 +10,6 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "erela.js": "^2.4.0",
-    "erela.js-spotify": "^1.2.8",
     "mongoose": "^8.0.3",
     "moment": "^2.29.4"
   }
