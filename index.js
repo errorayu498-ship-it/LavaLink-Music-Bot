@@ -1,6 +1,5 @@
 const { Client, Collection, GatewayIntentBits, REST, Routes } = require('discord.js');
 const { Manager } = require('erela.js');
-const Spotify = require('erela.js-spotify');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
@@ -37,12 +36,7 @@ client.manager = new Manager({
         retryDelay: 5000,
         retryAmount: 5
     }],
-    plugins: [
-        new Spotify({
-            clientID: process.env.SPOTIFY_CLIENT_ID,
-            clientSecret: process.env.SPOTIFY_CLIENT_SECRET
-        })
-    ],
+    plugins: [],
     autoPlay: true,
     send(id, payload) {
         const guild = client.guilds.cache.get(id);
